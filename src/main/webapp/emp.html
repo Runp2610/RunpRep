@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>打刻モード</title>
+<link rel ="stylesheet" href ="popup.css">
+<script>
+	function DDigit(num){
+		let ret;
+		if(num<10)
+		ret = "0" + num;
+		else
+		ret = num;
+		return ret;
+	}
+	function showClock(){
+		  let nowTime = new Date ();
+		  let nowMonth = nowTime.getMonth() + 1;
+		  let nowDate = nowTime.getDate();
+		  let nowHour = DDigit(nowTime.getHours());
+		  let nowMin = DDigit(nowTime.getMinutes());
+		  let nowSec = DDigit(nowTime.getSeconds());
+		  let date = nowMonth + "/" + nowDate;
+		  document.getElementById("day").innerHTML = date;
+		  let hm = nowHour +":" + nowMin;
+		  let hms =hm + ":" + nowSec;
+		  document.getElementById("time").innerHTML = hms;
+	}
+	setInterval('showClock()', 1000);
+	var fID = new Array(50);
+	fID.fill("記録無し");
+	var att = new Array(50);
+	att.fill("--:--");
+	var out = new Array(50);
+	out.fill("--:--");
+	function dakoku(){
+		let nowTime = new Date ();
+		let nowHour = DDigit(nowTime.getHours());
+		let nowMin = DDigit(nowTime.getMinutes());
+		let hm = nowHour +":" + nowMin;
+		let vonvo = document.getElementById("pom").value;
+		let H = document.getElementById("mean").value;
+		let j = 0;
+		while( fID[j] != vonvo && j < 51){
+			j++;
+		}
+		if( H == "退" && out[j] == "--:--" ){
+			out[j] = hm;
+		}else{
+			for( let k = 0; k < 49; k++){
+				fID[49-k] = fID[48-k];
+				att[49-k] = att[48-k];
+				out[49-k] = out[48-k];
+			}
+			fID[0] = vonvo;
+			if( H == "出" ){
+				att[0] = hm;
+				out[0] = "--:--";
+				if( out[j+1] == "--:--" ){
+					out[j+1] = "打刻忘れ";
+				}
+			}else{
+				att[0] = "打刻忘れ";
+				out[0] = hm;
+			}
+		}
+	      for (var i = 0; i < 10; i++){
+			  document.getElementById("ID"+i).innerHTML = fID[i];
+			  document.getElementById("att"+i).innerHTML = att[i];
+			  document.getElementById("out"+i).innerHTML = out[i];
+		  }
+	}
+</script>
+</head>
+<body>
+	<h1 id="day">-/-</h1>
+	<p id="time">--:--:--</p>
+	<input type="text" id="pom" placeholder="パートコードを入力">
+	<select id="mean">
+		<option value="出">出勤</option>
+		<option value="退">退勤</option>
+	</select>
+	<button onclick="dakoku();">打刻</button><br>
+	出勤者<br>
+	<table>
+		<tbody>
+			<tr>
+				<th>パートコード</th>
+				<th>出勤時刻</th>
+				<th>退勤時刻</th>
+			</tr>
+			<script type="text/javascript">
+				for (var m = 0; m < 10; m++){
+					document.write("<tr>");
+					document.write("<td id=\"ID" + m + "\">記録無し</td>");
+					document.write("<td id=\"att" + m + "\">--:--</td>");
+					document.write("<td id=\"out" + m + "\">--:--</td>");
+					document.write("</tr>");
+				}
+			</script>
+		</tbody>
+	</table>
+	<input type="checkbox" id="popup">
+	<label class="popup-open" for="popup">ログを表示</label>
+	<div class="popup-overlay">
+	    <div class="popup-window">
+	        <p class="popup-text">
+				<table>
+		<tbody>
+			<tr>
+				<script type = "text/javascript">
+					for (var n = 0; n < 4; n++){
+						document.write("<th>パートコード</th>");
+						document.write("<th>出勤時刻</th>");
+						document.write("<th>退勤時刻</th>");
+					}
+					document.write("</tr>");
+					for (var m = 0; m < 12; m++){
+						document.write("<tr>");
+							for (var p = 0; p < 4; p++){
+								document.write("<td id=\"ID" + (4*m+p) + "\">記録無し</td>");
+								document.write("<td id=\"att" + (4*m+p) + "\">--:--</td>");
+								document.write("<td id=\"out" + (4*m+p) + "\">--:--</td>");
+							}
+						document.write("</tr>");
+					}
+				</script>
+		</tbody>
+	</table>
+			</p>
+	        <label class="popup-close" for="popup">
+	            <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+	                <line x1="0" y1="0" x2="18" y2="18" stroke="white" stroke-width="3"></line>
+	                <line x1="0" y1="18" x2="18" y2="0" stroke="white" stroke-width="3"></line>
+	            </svg>
+	        </label>
+	    </div>
+	</div>
+	<a href="Top.html">Top</a>
+</body>
+</html>
